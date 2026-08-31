@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1010">
+  <meta name="description" content="Forklight, karar vermeden önce olası yolları görünür ve ölçülebilir hale getiren yerel öncelikli senaryo çalışma alanıdır.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <link rel="canonical" href="https://muhammetefesahan.github.io/Forklight/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Forklight — Karardan önce yolları aydınlat">
+  <meta property="og:description" content="Üç senaryo kur, erken sinyalleri belirle ve karar hazırlığını şeffaf biçimde ölç.">
+  <meta property="og:url" content="https://muhammetefesahan.github.io/Forklight/">
+  <meta property="og:image" content="https://muhammetefesahan.github.io/Forklight/public/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Forklight — Karardan önce yolları aydınlat">
+  <meta name="twitter:description" content="Yerel öncelikli, açıklanabilir senaryo provası.">
+  <meta name="twitter:image" content="https://muhammetefesahan.github.io/Forklight/public/og.png">
+  <title>Forklight — Karardan önce yolları aydınlat</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./public/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Çalışma alanına geç</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Forklight ana sayfa">
+      <span class="brand-mark" aria-hidden="true">F</span>
+      <span>Forklight</span>
+    </a>
+    <div class="topbar-actions" aria-label="Çalışma araçları">
+      <span class="privacy-note"><span aria-hidden="true">●</span> Veriler bu cihazdan çıkmaz</span>
+      <button id="import-button" class="button button-quiet" type="button">İçe aktar</button>
+      <button id="export-json" class="button button-quiet" type="button">JSON</button>
+      <button id="export-markdown" class="button button-quiet" type="button">Markdown</button>
+      <button id="clear-button" class="button button-danger" type="button">Temizle</button>
+      <input id="import-file" type="file" accept="application/json,.json" hidden>
+    </div>
+  </header>
+
+  <div id="storage-alert" class="storage-alert" role="alert" hidden>
+    Tarayıcı depolaması kullanılamıyor. Değişiklikler bu oturum kapanınca kaybolabilir; JSON dışa aktarımı al.
+  </div>
+
+  <main id="workspace" class="page-shell">
+    <section class="workspace" aria-labelledby="page-title">
+      <div class="intro-row">
+        <div>
+          <p class="eyebrow">Yerel karar provası</p>
+          <h1 id="page-title">Karardan önce yolları aydınlat.</h1>
+          <p class="intro-copy">Bir kararı üç olası yoldan geçir; erken sinyalleri ve karşı hamleleri görünür kıl.</p>
+        </div>
+        <div class="intro-actions">
+          <span id="save-status" class="status-chip" role="status">Bu cihazda saklanır</span>
+          <button id="sample-button" class="text-button" type="button">Örneği yükle</button>
+        </div>
+      </div>
+
+      <div class="decision-grid">
+        <label class="decision-field">
+          <span>Hangi kararı prova ediyorsun?</span>
+          <input id="decision" type="text" maxlength="160" autocomplete="off" placeholder="Örn. Yeni bir iş teklifini kabul etmek…">
+        </label>
+        <label class="decision-field trigger-field">
+          <span>Kararı yeniden değerlendirme sinyali</span>
+          <input id="review-trigger" type="text" maxlength="180" autocomplete="off" placeholder="Örn. İki ay üst üste hedefin %20 altında kalırsa…">
+        </label>
+      </div>
+
+      <div class="path-label" aria-hidden="true">
+        <span>Bugün</span><i></i><span>Üç olası yol</span>
+      </div>
+
+      <div id="scenario-grid" class="scenario-grid">
+        <article class="scenario-card scenario-up" data-scenario="up">
+          <header>
+            <span class="scenario-index" aria-hidden="true">01</span>
+            <span class="scenario-symbol" aria-hidden="true">↗</span>
+            <div><p>İyimser yol</p><h2>Beklenenden iyi giderse</h2></div>
+          </header>
+          <label>Ne olur?<textarea data-field="description" rows="3" maxlength="360" placeholder="En iyi gerçekçi sonucu yaz…"></textarea></label>
+          <div class="measure-grid">
+            <label><span>Olasılık <output data-output="probability">3</output></span><input data-field="probability" type="range" min="1" max="5" value="3" aria-label="İyimser yol olasılığı"><small><b>1 Nadir</b><b>5 Çok olası</b></small></label>
+            <label><span>Etki <output data-output="impact">+3</output></span><input data-field="impact" type="range" min="-5" max="5" value="3" aria-label="İyimser yol etkisi"><small><b>-5 Yıkıcı</b><b>+5 Dönüştürücü</b></small></label>
+            <label><span>Kontrol <output data-output="control">3</output></span><input data-field="control" type="range" min="1" max="5" value="3" aria-label="İyimser yol kontrol alanı"><small><b>1 Düşük</b><b>5 Yüksek</b></small></label>
+          </div>
+          <label>Erken sinyal<input data-field="signal" type="text" maxlength="220" autocomplete="off" placeholder="Bunun başladığını nasıl anlarsın?"></label>
+          <label>Hazırlık hamlesi<input data-field="action" type="text" maxlength="220" autocomplete="off" placeholder="Şimdiden hangi adımı atabilirsin?"></label>
+        </article>
+
+        <article class="scenario-card scenario-base" data-scenario="base">
+          <header>
+            <span class="scenario-index" aria-hidden="true">02</span>
+            <span class="scenario-symbol" aria-hidden="true">→</span>
+            <div><p>Ana yol</p><h2>En olası tablo</h2></div>
+          </header>
+          <label>Ne olur?<textarea data-field="description" rows="3" maxlength="360" placeholder="En olası sonucu yaz…"></textarea></label>
+          <div class="measure-grid">
+            <label><span>Olasılık <output data-output="probability">3</output></span><input data-field="probability" type="range" min="1" max="5" value="3" aria-label="Ana yol olasılığı"><small><b>1 Nadir</b><b>5 Çok olası</b></small></label>
+            <label><span>Etki <output data-output="impact">0</output></span><input data-field="impact" type="range" min="-5" max="5" value="0" aria-label="Ana yol etkisi"><small><b>-5 Yıkıcı</b><b>+5 Dönüştürücü</b></small></label>
+            <label><span>Kontrol <output data-output="control">3</output></span><input data-field="control" type="range" min="1" max="5" value="3" aria-label="Ana yol kontrol alanı"><small><b>1 Düşük</b><b>5 Yüksek</b></small></label>
+          </div>
+          <label>Erken sinyal<input data-field="signal" type="text" maxlength="220" autocomplete="off" placeholder="Bu yolun ilk işareti ne?"></label>
+          <label>Hazırlık hamlesi<input data-field="action" type="text" maxlength="220" autocomplete="off" placeholder="Hazırlığı somut bir fiille yaz…"></label>
+        </article>
+
+        <article class="scenario-card scenario-down" data-scenario="down">
+          <header>
+            <span class="scenario-index" aria-hidden="true">03</span>
+            <span class="scenario-symbol" aria-hidden="true">!</span>
+            <div><p>Ters yol</p><h2>Plan zorlanırsa</h2></div>
+          </header>
+          <label>Ne olur?<textarea data-field="description" rows="3" maxlength="360" placeholder="En zor gerçekçi sonucu yaz…"></textarea></label>
+          <div class="measure-grid">
+            <label><span>Olasılık <output data-output="probability">3</output></span><input data-field="probability" type="range" min="1" max="5" value="3" aria-label="Ters yol olasılığı"><small><b>1 Nadir</b><b>5 Çok olası</b></small></label>
+            <label><span>Etki <output data-output="impact">-3</output></span><input data-field="impact" type="range" min="-5" max="5" value="-3" aria-label="Ters yol etkisi"><small><b>-5 Yıkıcı</b><b>+5 Dönüştürücü</b></small></label>
+            <label><span>Kontrol <output data-output="control">3</output></span><input data-field="control" type="range" min="1" max="5" value="3" aria-label="Ters yol kontrol alanı"><small><b>1 Düşük</b><b>5 Yüksek</b></small></label>
+          </div>
+          <label>Erken sinyal<input data-field="signal" type="text" maxlength="220" autocomplete="off" placeholder="Sorun büyümeden ne görürsün?"></label>
+          <label>Hazırlık hamlesi<input data-field="action" type="text" maxlength="220" autocomplete="off" placeholder="Zararı sınırlamak için ne yaparsın?"></label>
+        </article>
+      </div>
+    </section>
+
+    <aside id="score-panel" class="score-panel" aria-labelledby="score-title" aria-live="polite">
+      <div class="score-heading">
+        <p class="eyebrow">Canlı özet</p>
+        <span id="outlook-band" class="signal">Bekliyor</span>
+      </div>
+      <h2 id="score-title">Karar görünümü</h2>
+      <p id="score-context" class="score-context">Bir karar ve en az bir senaryo yazınca görünüm oluşur.</p>
+      <div class="score-primary">
+        <span>Hazırlık skoru</span>
+        <strong id="readiness-score">—</strong>
+        <small>/ 100</small>
+      </div>
+      <progress id="readiness-meter" class="meter" max="100" value="0" aria-label="Hazırlık skoru">0</progress>
+      <dl class="score-list">
+        <div><dt>Risk maruziyeti</dt><dd id="risk-band">—</dd></div>
+        <div><dt>Kontrol alanı</dt><dd id="control-band">—</dd></div>
+        <div><dt>Hazırlanan yollar</dt><dd id="completion-count">0 / 3</dd></div>
+        <div><dt>Yeniden değerlendirme</dt><dd id="trigger-status">Belirlenmedi</dd></div>
+      </dl>
+      <details>
+        <summary>Bu görünüm nasıl oluştu?</summary>
+        <p><strong>Hazırlık:</strong> Her yol için senaryo, sinyal ve hamle kapsamının %70’i; kontrol alanının %30’u.</p>
+        <p><strong>Risk:</strong> Her olumsuz yol için olasılık × mutlak etki × kontrol dışı pay; sonra üç yola bölünür.</p>
+        <p>Sonuçlar tam sayıya yuvarlanır; ondalıklı sahte hassasiyet kullanılmaz.</p>
+      </details>
+      <p class="score-disclaimer">Bu bir matematiksel kesinlik veya gelecek tahmini değil; senin girdilerinden oluşan zihinsel hazırlık rehberidir.</p>
+    </aside>
+  </main>
+
+  <button id="mobile-score" class="mobile-score" type="button" aria-controls="score-panel">
+    <span>Hazırlık <strong id="mobile-readiness">—</strong></span>
+    <span>Risk <strong id="mobile-risk">—</strong></span>
+    <span aria-hidden="true">↑</span>
+  </button>
+
+  <footer>
+    <span>Forklight açık kaynak ve yerel önceliklidir.</span>
+    <span>Hesap yok · Takip yok · Dış ağ çağrısı yok</span>
+  </footer>
+
+  <dialog id="clear-dialog" aria-labelledby="clear-title">
+    <form method="dialog">
+      <p class="eyebrow">Geri alınamaz işlem</p>
+      <h2 id="clear-title">Tüm çalışma temizlensin mi?</h2>
+      <p>Bu cihazdaki karar, senaryolar ve hazırlık hamleleri silinecek. Önce dışa aktarım alabilirsin.</p>
+      <div class="dialog-actions">
+        <button class="button button-quiet" value="cancel">Vazgeç</button>
+        <button id="confirm-clear" class="button button-danger" value="confirm">Evet, temizle</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+
+  <script src="./src/core.js"></script>
+  <script src="./src/app.js"></script>
+</body>
+</html>

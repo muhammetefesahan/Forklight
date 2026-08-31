@@ -1,0 +1,14 @@
+{
+  "name": "Forklight — Karardan önce yolları aydınlat",
+  "short_name": "Forklight",
+  "description": "Yerel öncelikli, açıklanabilir senaryo provası.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1010",
+  "theme_color": "#0d1010",
+  "icons": [
+    { "src": "./public/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

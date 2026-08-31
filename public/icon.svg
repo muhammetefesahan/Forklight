@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Forklight">
+  <rect width="128" height="128" rx="30" fill="#f3b447"/>
+  <path d="M28 100V28h64v18H51v13h35v18H51v23H28Z" fill="#151817"/>
+  <circle cx="98" cy="30" r="7" fill="#f1eee5"/>
+</svg>

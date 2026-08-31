@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Unit tests
+        run: node --test tests/core.test.cjs
+      - name: Syntax checks
+        run: |
+          node --check src/core.js
+          node --check src/app.js
+          node --check sw.js
+      - name: Privacy-sensitive network scan
+        run: |
+          if grep -RInE 'fetch\(|XMLHttpRequest|WebSocket\(' src index.html; then
+            echo "Unexpected runtime network primitive found."
+            exit 1
+          fi
